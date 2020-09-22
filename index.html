@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Covid 19 India Tracker</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center mt-5">Covid-19 India Tracker</h1>
+        <h2 class="text-center">Countrywide Data</h2>
+        <br>
+        <table class="table text-center">
+            <thead>
+                <tr>
+                    <th>Total Cases</th>
+                    <th>Total Deaths</th>
+                    <th>Total Recoveries</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="country-data">
+                </tr>
+            </tbody>
+        </table>
+        <h2 class="text-center mt-5">StateWise Data</h2>
+        <table class="table text-center">
+            <thead>
+                <tr>
+                    <th>State</th>
+                    <th>Total Cases</th>
+                    <th>Total Active</th>
+                    <th>Total Deaths</th>
+                    <th>Total Recoveries</th>
+                </tr>
+            </thead>
+            <tbody id="myTable">
+            </tbody>
+        </table>
+    </div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+    init()
+
+    function init() {
+
+        var url_india = "https://api.covid19api.com/summary"
+        var url_states = "https://covid-india-cases.herokuapp.com/states/"
+
+        var data = ''
+
+        $.get(url_india, function (data) {
+            console.log(data.Countries[76].TotalDeaths)
+            data = `
+                <td>${data.Countries[76].TotalConfirmed}</td>
+                <td>${data.Countries[76].TotalDeaths}</td>
+                <td>${data.Countries[76].TotalRecovered}</td>
+                `
+            $("#country-data").html(data)
+        })
+
+        $.get(url_states, function (data) {
+            getStateData(data)
+        })
+    }
+
+    function getStateData(data) {
+
+        var table = document.getElementById("myTable")
+
+        for (var i = 0; i < data.length; i++) {
+            var row = `
+                <tr>
+                    <td>${data[i].state}</td>
+                    <td>${data[i].noOfCases}</td>
+                    <td>${data[i].active}</td>
+                    <td>${data[i].deaths}</td>
+                    <td>${data[i].cured}</td>
+                </tr>
+                `
+            table.innerHTML += row
+        }
+    }
+
+</script>
+
+</html>
